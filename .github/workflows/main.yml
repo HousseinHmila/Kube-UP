@@ -2,7 +2,7 @@ name: Python application
 
 on:
   push:
-    branches: ["t-006"]
+    branches: ["app-code"]
 
 permissions:
   contents: read
