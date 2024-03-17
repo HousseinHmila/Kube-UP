@@ -5,7 +5,7 @@ on:
     branches: ["app-code"]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   deploy:
