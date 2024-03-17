@@ -117,4 +117,4 @@ kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 ```
 
-#### Now that we have prepared all the requirements, let's start deploying and testing the application. To continue with the guide, please navigate to the `deploy-code` repository where you will find the next set of instructions.
+#### Now that we have prepared all the requirements, let's start deploying and testing the application. To continue with the guide, please navigate to the `deploy-code` branch where you will find the next set of instructions.
