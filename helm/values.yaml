@@ -1,0 +1,107 @@
+namespaces:
+  - name: all-kube
+
+deployment:
+  - app: kube-argo
+    namespace: all-kube
+    replicas: 1
+    containers:
+      - repository: housseinhmila/kube-argo:app-9
+        name: flask
+        resources:
+          requests:
+            cpu: "20m"
+            memory: "50mi"
+          limits:
+            cpu: "20m"
+            memory: "60Mi"
+        port: 5000
+        readinessProbe:
+          httpGet:
+            path: "/"
+          initialDelaySeconds: 5
+          periodSeconds: 30
+        livenessProbe:
+          httpGet:
+            path: "/"
+        initialDelaySeconds: 15
+        periodSeconds: 50
+
+service:
+  - name: kube-service
+    namespace: all-kube
+    protocol: TCP
+    targetPort: 5000
+    port: 8080
+    type: LoadBalancer
+    app: kube-argo
+
+ingress:
+  - name: kube-argo
+    namespace: all-kube
+    defaultBackend:
+      service:
+        name: default-http-backend
+        port: 80
+    ingressClassName: nginx
+    host: all.kube
+    paths:
+      path: /
+      pathType: Prefix
+    rules:
+      backend:
+        service:
+          name: kube-service
+          port: 8080
+  
+networkPolicy:
+  - name: allow-port-5000
+    namespace: all-kube
+    podSelector:
+      matchLabels:
+        app: kube-argo
+    ingress:
+      ports:
+        port: 5000
+
+role:
+  - metadata:
+      namespace: all-kube
+      name: my-role
+    rules:
+      - apiGroups: ["*"]
+        resources: ["*"]
+        verbs: ["*"]
+
+roleBinding:
+  - metadata:
+      name: read-pods
+      namespace: all-kube
+    subjects:
+      kind: User
+      name: amir
+      apiGroup: rbac.authorization.k8s.io
+    roleRef:
+      kind: Role
+      name: my-role
+      apiGroup: rbac.authorization.k8s.io
+hpa:
+  - metadata:
+      name: kube-argo
+      namespace: all-kube
+    spec:
+      maxReplicas: 3
+      metrics:
+        cpu:
+          target:
+            averageUtilization: 70
+          type: Utilization
+        memory:
+          target:
+            averageUtilization: 80
+          type: Utilization
+      minReplicas: 1
+      scaleTargetRef:
+        apiVersion: apps/v1
+        kind: Deployment
+        name: kube-argo

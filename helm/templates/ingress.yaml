@@ -1,0 +1,28 @@
+{{- range $ingress := .Values.ingress }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $ingress.name }}
+  namespace: {{ $ingress.namespace }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  defaultBackend:
+    service:
+      name: {{ $ingress.defaultBackend.service.name }}
+      port:
+        number: {{ $ingress.defaultBackend.service.port }}
+  ingressClassName: {{ $ingress.ingressClassName }}
+  rules:
+  - host: {{ $ingress.host }}
+    http:
+      paths:
+      - path: {{ $ingress.paths.path }}
+        pathType: {{ $ingress.paths.pathType }}
+        backend:
+          service:
+            name: {{ $ingress.rules.backend.service.name }}
+            port:
+              number: {{ $ingress.rules.backend.service.port }}
+{{- end}}

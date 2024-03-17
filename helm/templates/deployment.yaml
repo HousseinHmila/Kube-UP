@@ -1,0 +1,59 @@
+{{- range $app := .Values.deployment }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ $app.app }}
+  name: {{ $app.app }}
+  namespace: {{ $app.namespace }}
+spec:
+  replicas: {{ $app.replicas }}
+  selector:
+    matchLabels:
+      app: {{ $app.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ $app.app }}
+    spec:
+      {{- if $app.volumes }}
+      volumes:
+        {{- range $vol := $app.volumes }}
+        - name: {{ $vol.name }}
+          {{- if $vol.configMap}}
+          configMap:
+            name: {{ $vol.configMap.name }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+      containers:
+      {{- range $cont := $app.containers }}
+      - image: {{ $cont.repository }}
+        name: {{ $cont.name }}
+        resources:
+          limits:
+            memory: {{ $cont.resources.limits.memory }}
+            cpu: {{ $cont.resources.limits.cpu }}
+        ports:
+          - containerPort: {{ $cont.port }}
+        {{- if $cont.env }}
+        env:
+          {{- range $env :=  $cont.env }}
+          - name: {{ $env.name }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $env.secretName }}
+                key: {{ $env.secretKey }}
+          {{- end }}
+        {{- end }}
+        {{- if $app.volumeMounts }}
+        volumeMounts:
+          {{- range $vol := $app.volumeMounts }}
+          - name: {{ $vol.name }}
+            mountPath: {{ $vol.mountPath }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+{{- end }}
+

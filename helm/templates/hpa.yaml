@@ -1,0 +1,28 @@
+{{- range $hpa := .Values.hpa }}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ $hpa.metadata.name }}
+  namespace: {{ $hpa.metadata.namespace }}
+spec:
+  maxReplicas: {{ $hpa.spec.maxReplicas }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ $hpa.spec.metrics.cpu.target.averageUtilization }}
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: {{ $hpa.spec.metrics.memory.target.averageUtilization }}
+  minReplicas: {{ $hpa.spec.minReplicas }}
+  scaleTargetRef:
+    apiVersion: {{ $hpa.spec.scaleTargetRef.apiVersion }}
+    kind: {{ $hpa.spec.scaleTargetRef.kind }}
+    name: {{ $hpa.spec.scaleTargetRef.name }}
+{{- end}}
