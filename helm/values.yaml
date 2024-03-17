@@ -6,7 +6,7 @@ deployment:
     namespace: all-kube
     replicas: 1
     containers:
-      - repository: housseinhmila/kube-argo:app-
+      - repository: housseinhmila/kube-argo:app-8
         name: flask
         resources:
           requests:
