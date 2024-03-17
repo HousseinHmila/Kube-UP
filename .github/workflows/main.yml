@@ -42,10 +42,10 @@ jobs:
           git config user.email housseinhmila@gmail.com
           git config user.name Houssein
           pwd
-          cat /helm/values.yaml
+          cat ./helm/values.yaml
           pwd
-          sed -i "s+housseinhmila/kube-argo.*+housseinhmila/kube-argo:app-$RUN_NUMBER+g" /helm/values.yaml
-          cat /helm/values.yaml
+          sed -i "s+housseinhmila/kube-argo.*+housseinhmila/kube-argo:app-$RUN_NUMBER+g" ./helm/values.yaml
+          cat ./helm/values.yaml
           git add .
           git commit -m 'Done  by Github Actions   Job changemanifest: ${{ github.run_number }}'
           git push origin t-007
