@@ -1,5 +1,5 @@
 # Project Overview
-![alt text](architecture-diagram.pdf)
+![architecture diagram](./assets/all-kube.png)
 This project contains two principal branches:
 
 ### app-code
