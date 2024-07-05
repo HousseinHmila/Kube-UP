@@ -1,5 +1,5 @@
 # Project Overview
-
+![alt text](architecture-diagram.pdf)
 This project contains two principal branches:
 
 ### app-code
